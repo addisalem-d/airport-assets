@@ -36,7 +36,8 @@ services:
       - .:/app
       - /app/node_modules
     environment:
-      - VITE_USE_MOCK=true
+      - VITE_USE_MOCK=false
+      - VITE_API_URL=http://localhost:8000
     depends_on:
       - backend
     stdin_open: true
