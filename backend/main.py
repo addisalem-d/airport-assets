@@ -29,6 +29,9 @@ app.add_middleware(
 app.include_router(auth.router,      prefix="/auth",      tags=["auth"])
 app.include_router(users.router,     prefix="/users",     tags=["users"])
 app.include_router(dashboard.router, prefix="/dashboard", tags=["dashboard"])
+app.include_router(locations.router, prefix="/locations", tags=["locations"])
+app.include_router(assets.router, prefix="/assets", tags=["assets"])
+
 
 
 
