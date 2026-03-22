@@ -3,7 +3,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from db.database import engine, Base
-from routers import users, auth, dashboard, locations
+from routers import users, auth, dashboard, locations, asset, maintenance
+
 
 
 @asynccontextmanager
@@ -30,7 +31,10 @@ app.include_router(auth.router,      prefix="/auth",      tags=["auth"])
 app.include_router(users.router,     prefix="/users",     tags=["users"])
 app.include_router(dashboard.router, prefix="/dashboard", tags=["dashboard"])
 app.include_router(locations.router, prefix="/locations", tags=["locations"])
-app.include_router(assets.router, prefix="/assets", tags=["assets"])
+app.include_router(asset.router, prefix="/assets", tags=["assets"])
+app.include_router(maintenance.router, prefix="/maintenance", tags=["maintenance"])
+
+
 
 
 
