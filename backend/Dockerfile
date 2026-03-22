@@ -9,4 +9,4 @@ COPY . .
 
 EXPOSE 8000
 
-CMD ["sh", "-c", "python db/seed.py && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"]
+CMD ["sh", "-c", "python -m db.seed && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"]

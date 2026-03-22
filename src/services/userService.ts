@@ -1,22 +1,10 @@
 import type { User, CreateUserPayload, UpdateUserPayload } from '../types/User'
 import { mockUsers } from '../data/mockUsers'
+import { api } from './api'
 
 const USE_MOCK = import.meta.env.VITE_USE_MOCK !== 'false'
-const BASE     = '/api/users'
+const BASE     = '/users/'
 
-function authHeader() {
-  const token = localStorage.getItem('token')
-  return token ? { Authorization: `Bearer ${token}` } : {}
-}
-
-async function request<T>(path: string, options?: RequestInit): Promise<T> {
-  const res = await fetch(path, {
-    headers: { 'Content-Type': 'application/json', ...authHeader() },
-    ...options,
-  })
-  if (!res.ok) throw new Error(`API error: ${res.status}`)
-  return res.json()
-}
 
 // ── simulate network delay for mock ──────────────────────────────────────────
 const delay = (ms = 300) => new Promise(r => setTimeout(r, ms))
@@ -27,7 +15,7 @@ export const userService = {
 
   async getAll(): Promise<User[]> {
     if (USE_MOCK) { await delay(); return [...localUsers] }
-    return request<User[]>(BASE)
+    return api.get<User[]>(BASE).then(res => res.data)
   },
 
   async create(payload: CreateUserPayload): Promise<User> {
@@ -45,7 +33,7 @@ export const userService = {
       localUsers.push(newUser)
       return newUser
     }
-    return request<User>(BASE, { method: 'POST', body: JSON.stringify(payload) })
+    return api.post<User>(BASE, payload).then(res => res.data)
   },
 
   async update(id: number, payload: UpdateUserPayload): Promise<User> {
@@ -56,12 +44,12 @@ export const userService = {
       )
       return localUsers.find(u => u.id === id)!
     }
-    return request<User>(`${BASE}/${id}`, { method: 'PATCH', body: JSON.stringify(payload) })
+    return api.patch<User>(`${BASE}${id}`, payload).then(res => res.data)
   },
 
   async remove(id: number): Promise<void> {
     if (USE_MOCK) { await delay(); localUsers = localUsers.filter(u => u.id !== id); return }
-    return request<void>(`${BASE}/${id}`, { method: 'DELETE' })
+    await api.delete(`${BASE}${id}`)
   },
 
   async toggleActive(id: number, is_active: boolean): Promise<User> {

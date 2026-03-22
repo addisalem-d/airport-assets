@@ -32,3 +32,5 @@ dist/
 
 # Vite build output
 dist/
+__pycache__/
+*.pyc
