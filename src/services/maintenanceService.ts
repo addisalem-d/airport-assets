@@ -1,17 +1,16 @@
 import type { MaintenanceLog, CreateMaintenancePayload } from '../types/Maintenance'
 import { mockMaintenance } from '../data/mockMaintenance'
+import { api } from './api'
 
 const USE_MOCK = import.meta.env.VITE_USE_MOCK !== 'false'
-const BASE = '/api/maintenance'
-const headers = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` })
 
 let local = [...mockMaintenance]
 
 export const maintenanceService = {
   async getAll(): Promise<MaintenanceLog[]> {
     if (USE_MOCK) return [...local]
-    const res = await fetch(BASE, { headers: headers() })
-    return res.json()
+    const res = await api.get<MaintenanceLog[]>('/maintenance')
+    return res.data
   },
 
   async create(payload: CreateMaintenancePayload): Promise<MaintenanceLog> {
@@ -29,16 +28,16 @@ export const maintenanceService = {
       local.push(log)
       return log
     }
-    const res = await fetch(BASE, { method: 'POST', headers: headers(), body: JSON.stringify(payload) })
-    return res.json()
+    const res = await api.post<MaintenanceLog>('/maintenance', payload)
+    return res.data
   },
 
   async updateStatus(id: number, status: string): Promise<MaintenanceLog> {
     if (USE_MOCK) {
-      local = local.map(m => m.id === id ? { ...m, status: status as MaintenanceLog['status'], updated_at: new Date().toISOString() } : m)
+      local = local.map(m => m.id === id ? { ...m, status: status as MaintenanceLog['status'] } : m)
       return local.find(m => m.id === id)!
     }
-    const res = await fetch(`${BASE}/${id}`, { method: 'PATCH', headers: headers(), body: JSON.stringify({ status }) })
-    return res.json()
+    const res = await api.patch<MaintenanceLog>(`/maintenance/${id}`, { status })
+    return res.data
   },
 }
