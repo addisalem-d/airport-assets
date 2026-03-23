@@ -1,46 +1,139 @@
-# Getting Started with Create React App
+# Airport Assets Management System
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A full-stack asset management platform for airport operations — built with React, FastAPI, and PostgreSQL.
 
-## Available Scripts
+## Quick Start
 
-In the project directory, you can run:
+```bash
+git clone https://github.com/addisalem-d/airport-assets.git
+cd airport-assets
+docker compose up --build
+```
 
-### `npm start`
+| Service  | URL                          |
+|----------|------------------------------|
+| Frontend | http://localhost:5173        |
+| Backend  | http://localhost:8000        |
+| API Docs | http://localhost:8000/docs   |
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+**Default credentials**
+- `admin` / `admin123` — Administrator
+- `user1` / `manager123` — Manager
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+---
 
-### `npm test`
+## Features
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **Dashboard** — KPI cards + D3 bar chart (assets by category), asset status breakdown, maintenance stats
+- **User Management** — CRUD, role filter, search, active/inactive toggle
+- **Assets** — Full asset inventory with category filter, add/edit/delete
+- **Locations** — Airport zones and facilities management
+- **Maintenance** — Ticket tracking with priority and status management
+- **JWT Auth** — Login/logout with token-based authentication
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Tech Stack
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+| Layer     | Technology                              |
+|-----------|-----------------------------------------|
+| Frontend  | React 18, TypeScript, Vite, CSS Modules |
+| Charts    | D3.js                                   |
+| State     | Zustand                                 |
+| Backend   | FastAPI, Python 3.12                    |
+| ORM       | SQLAlchemy 2.0 + Alembic                |
+| Database  | PostgreSQL 16                           |
+| Auth      | JWT (python-jose + bcrypt)              |
+| Container | Docker + Docker Compose                 |
+| CI        | GitHub Actions                          |
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+## Project Structure
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```
+airport-assets/
+├── src/                    # React frontend
+│   ├── components/
+│   │   ├── charts/         # D3 chart components
+│   │   ├── layout/         # Sidebar, Topbar
+│   │   └── ui/             # Shared UI components
+│   ├── pages/              # Dashboard, Users, Assets, Locations, Maintenance
+│   ├── services/           # API service layer (mock/real swap)
+│   ├── types/              # TypeScript interfaces
+│   └── data/               # Mock data
+├── backend/
+│   ├── routers/            # FastAPI route handlers
+│   ├── models/             # SQLAlchemy ORM models
+│   ├── schemas/            # Pydantic request/response schemas
+│   ├── core/               # Config, security, dependencies
+│   └── db/                 # Database setup + seed script
+├── docker-compose.yml
+├── Dockerfile              # Frontend container
+└── .github/workflows/ci.yml
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## Development
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### Without Docker
 
-## Learn More
+**Frontend**
+```bash
+npm install
+VITE_USE_MOCK=true npm run dev
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+**Backend**
+```bash
+cd backend
+pip install -r requirements.txt
+# Start PostgreSQL then:
+PYTHONPATH=. python db/seed.py
+uvicorn main:app --reload
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Environment Variables
+
+Copy `.env.example` to `.env`:
+```bash
+cp .env.example .env
+```
+
+| Variable                    | Default                                          |
+|-----------------------------|--------------------------------------------------|
+| `VITE_USE_MOCK`             | `false`                                          |
+| `VITE_API_URL`              | `http://localhost:8000`                          |
+| `DATABASE_URL`              | `postgresql://admin:secret@db:5432/airport_assets` |
+| `SECRET_KEY`                | change in production                             |
+
+---
+
+## CI/CD
+
+GitHub Actions runs on every push to `main` and `feature/*`:
+- Frontend: `npm ci` → `vite build`
+- Backend: pip install → import check
+
+---
+
+## API Endpoints
+
+Full interactive docs at `http://localhost:8000/docs`
+
+| Method | Endpoint               | Description          |
+|--------|------------------------|----------------------|
+| POST   | /auth/login            | Login, get JWT token |
+| GET    | /users                 | List all users       |
+| POST   | /users                 | Create user          |
+| PATCH  | /users/{id}            | Update user          |
+| DELETE | /users/{id}            | Delete user          |
+| GET    | /assets                | List all assets      |
+| POST   | /assets                | Create asset         |
+| GET    | /locations             | List all locations   |
+| POST   | /locations             | Create location      |
+| GET    | /maintenance           | List all tickets     |
+| POST   | /maintenance           | Create ticket        |
+| PATCH  | /maintenance/{id}      | Update ticket status |
+| GET    | /dashboard/summary     | Dashboard stats      |
