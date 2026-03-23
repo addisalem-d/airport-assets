@@ -11,7 +11,7 @@ const PRIORITY = ['low', 'medium', 'high', 'critical']
 // ─── Add Modal ────────────────────────────────────────────────────────────────
 function AddModal({ onClose, onSave }: { onClose: () => void; onSave: () => void }) {
   const [form, setForm] = useState<CreateMaintenancePayload>({
-    asset_id: 1, assigned_to: 1, type: 'preventive', priority: 'medium',
+    asset_id: 1, assigned_to: 8, type: 'preventive', priority: 'medium',
     title: '', description: '', scheduled_date: '', notes: '',
   })
   const [saving, setSaving] = useState(false)
@@ -20,9 +20,10 @@ function AddModal({ onClose, onSave }: { onClose: () => void; onSave: () => void
   async function submit() {
     if (!form.title || !form.scheduled_date) return
     setSaving(true)
-    await maintenanceService.create(form)
-    onSave(); onClose()
-    setSaving(false)
+    try {
+      await maintenanceService.create(form)
+      onSave(); onClose()
+    } finally { setSaving(false) }
   }
 
   return (
@@ -48,8 +49,18 @@ function AddModal({ onClose, onSave }: { onClose: () => void; onSave: () => void
         </div>
 
         <div className={styles.row2}>
-          <div className={styles.field}><label>Asset ID</label><input type="number" value={form.asset_id} onChange={e => set('asset_id', Number(e.target.value))} /></div>
-          <div className={styles.field}><label>Assigned to (user ID)</label><input type="number" value={form.assigned_to} onChange={e => set('assigned_to', Number(e.target.value))} /></div>
+          <div className={styles.field}>
+            <label>Asset ID</label>
+            <input type="number" min="1" max="10" value={form.asset_id} onChange={e => set('asset_id', Number(e.target.value))} placeholder="1-10" />
+          </div>
+          <div className={styles.field}>
+            <label>Assigned to (user ID)</label>
+            <select value={form.assigned_to} onChange={e => set('assigned_to', Number(e.target.value))}>
+              <option value={8}>admin (8)</option>
+              <option value={9}>user1 (9)</option>
+              <option value={10}>test123 (10)</option>
+            </select>
+          </div>
         </div>
 
         <div className={styles.field}><label>Scheduled date</label><input type="date" value={form.scheduled_date} onChange={e => set('scheduled_date', e.target.value)} /></div>
