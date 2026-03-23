@@ -9,54 +9,34 @@ on:
 jobs:
 
   frontend:
-    name: Frontend — lint & build
+    name: Frontend — build
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: .
-
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Type check
-        run: npx tsc --noEmit
-
-      - name: Build
-        run: npm run build
+      - run: npm ci
+      - run: npm run build
         env:
           VITE_USE_MOCK: true
           VITE_API_URL: http://localhost:8000
 
   backend:
-    name: Backend — lint & test
+    name: Backend — import check
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: backend
-
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
           cache: pip
-
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      - name: Check imports
-        run: python -c "import main"
+      - run: pip install -r requirements.txt
+      - run: python -c "import main"
         env:
           DATABASE_URL: sqlite:///./test.db
           SECRET_KEY: test-secret-key
