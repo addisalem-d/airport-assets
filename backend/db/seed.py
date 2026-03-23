@@ -10,7 +10,7 @@ def seed():
     db = SessionLocal()
 
     if db.query(User).count() == 0:
-        db.add(User(name='Jay Admin',    username='admin',   email='jay@airport.com',     hashed_password=hash_password('admin123'),   role='administrator', is_active=True, avatar_initials='JA'))
+        db.add(User(name='Addisalem Admin',    username='admin',   email='Addisalem@airport.com',     hashed_password=hash_password('admin123'),   role='administrator', is_active=True, avatar_initials='JA'))
         db.add(User(name='Manager Test', username='user1',   email='manager@airport.com', hashed_password=hash_password('manager123'), role='manager',       is_active=True, avatar_initials='MT'))
         db.add(User(name='Tester Admin', username='test123', email='tester@airport.com',  hashed_password=hash_password('test123'),    role='administrator', is_active=True, avatar_initials='TA'))
         db.commit()
