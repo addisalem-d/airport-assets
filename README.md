@@ -137,3 +137,10 @@ Full interactive docs at `http://localhost:8000/docs`
 | POST   | /maintenance           | Create ticket        |
 | PATCH  | /maintenance/{id}      | Update ticket status |
 | GET    | /dashboard/summary     | Dashboard stats      |
+
+
+
+
+
+## Author
+Addisalem — [github.com/addisalem-d](https://github.com/addisalem-d)
