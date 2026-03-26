@@ -11,8 +11,14 @@ const NAV = [
 
 export default function Layout() {
   const navigate = useNavigate()
-  const user = JSON.parse(localStorage.getItem('user') || '{}')
-
+  // const user = JSON.parse(localStorage.getItem('user') || '{}')
+const storedUser = localStorage.getItem('user')
+let user = null
+try {
+  user = storedUser ? JSON.parse(storedUser) : null
+} catch {
+  user = storedUser
+}
   function logout() {
     localStorage.removeItem('token')
     localStorage.removeItem('user')
