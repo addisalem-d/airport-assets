@@ -9,10 +9,7 @@
     "@mui/material": "^7.3.9",
     "@tanstack/react-query": "^5.95.2",
     "@testing-library/dom": "^10.4.1",
-    "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^13.5.0",
-    "@types/jest": "^27.5.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "axios": "^1.13.6",
@@ -26,7 +23,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "jest"
   },
   "eslintConfig": {
     "extends": [
@@ -47,9 +45,16 @@
     ]
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
     "@types/d3": "^7.4.3",
+    "@types/jest": "^30.0.0",
     "@types/node": "^25.5.0",
     "@vitejs/plugin-react": "^6.0.1",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^30.3.0",
+    "jest-environment-jsdom": "^30.3.0",
+    "ts-jest": "^29.4.6",
     "vite": "^8.0.1"
   }
 }
