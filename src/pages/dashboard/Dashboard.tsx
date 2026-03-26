@@ -3,47 +3,22 @@ import BarChart from '../../components/charts/BarChart'
 import { dashboardService } from '../../services/dashboardService'
 import type { DashboardSummary } from '../../types/Dashboard'
 import styles from './Dashboard.module.css'
+import { useQuery } from '@tanstack/react-query'
+import { mockDashboardSummary } from '../../data/mockDashboardSummary';
+
+
 
 export default function Dashboard() {
-  const [summary, setSummary] = useState<DashboardSummary | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
 
-  useEffect(() => {
-    let isMounted = true
-
-    async function loadSummary() {
-      try {
-        const data = await dashboardService.getSummary()
-        if (!isMounted) return
-        setSummary(data)
-      } catch (err: any) {
-        if (!isMounted) return
-        console.error('Failed to load dashboard summary', err)
-        const errorMsg = err.response?.status === 401 
-          ? 'Authentication failed. Please log in again.'
-          : err.response?.data?.detail || 'Unable to load dashboard data.'
-        setError(errorMsg)
-      } finally {
-        if (isMounted) setLoading(false)
-      }
-    }
-
-    loadSummary()
-
-    return () => {
-      isMounted = false
-    }
-  }, [])
-
-  if (loading) {
+const { data: summary, isLoading, error } = useQuery({
+  queryKey: ['dashboard'],
+  queryFn: dashboardService.getSummary,
+  refetchInterval: 1000 * 60,
+  placeholderData: mockDashboardSummary,
+});
+  if (isLoading) {
     return <div className={styles.loading}>Loading dashboard…</div>
   }
-
-  if (error) {
-    return <div className={styles.error}>{error}</div>
-  }
-
   if (!summary) {
     return <div className={styles.error}>No dashboard data available.</div>
   }

@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+from random import seed
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -10,6 +11,11 @@ from routers import users, auth, dashboard, locations, asset, maintenance
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     Base.metadata.create_all(bind=engine)
+    try:
+        seed()
+        print("Database seeded successfully")
+    except Exception as e:
+        print(f" Error while seeding data: {e}")
     yield
 
 

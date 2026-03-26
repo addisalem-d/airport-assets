@@ -25,6 +25,8 @@ def login(payload: LoginIn, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(user)
 
+    # token = create_access_token({"sub": user.id, "role": user.role})
+
     token = create_access_token({"sub": str(user.id), "role": user.role})
     return TokenOut(access_token=token, user=UserOut.model_validate(user))
 

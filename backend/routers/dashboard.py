@@ -6,6 +6,7 @@ from core.dependencies import get_db, get_current_user
 from models.user import User
 from models.asset import Asset
 from models.maintenance import MaintenanceLog
+from models.location import Location
 
 router = APIRouter()
 
@@ -33,7 +34,8 @@ def get_summary(
         "total_assets":                total_assets,
         "active_assets":               active_assets,
         "assets_under_maintenance":    under_maintenance,
-        "total_locations":             0,
+        "total_locations":             db.query(Location).count(),     
+        #   "total_locations": db.query(Location).filter(Location.is_active == True).count(),  if I want to count only active locations
         "active_users":                active_users,
         "open_maintenance_tickets":    open_tickets,
         "overdue_maintenance":         overdue,
