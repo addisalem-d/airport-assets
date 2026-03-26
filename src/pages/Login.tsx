@@ -1,10 +1,14 @@
+
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { authService } from '../services/authService'
+import { useAuth } from '../context/AuthContext' // 1. Import your hook
 import styles from './Login.module.css'
 
 export default function Login() {
   const navigate = useNavigate()
+  const { login } = useAuth() // 2. Access the login function from context
+  
   const [username, setUsername] = useState('admin')
   const [password, setPassword] = useState('Aiport123')
   const [error, setError] = useState('')
@@ -16,11 +20,17 @@ export default function Login() {
     setLoading(true)
 
     try {
+      // Assuming your authService.login returns the user data or token
       const result = await authService.login(username, password)
-      console.log('Login successful:', result)
-      console.log('token now', localStorage.getItem('token'))
-      // Full page reload to reinitialize App with authenticated state
-      window.location.href = '/dashboard'
+            console.log('Login successful:', result)
+
+      // Update the Global Auth State
+      // If result contains a user object or name, pass it here
+      login(username) 
+
+      //  I Use React Router to navigate instead of window.location
+      navigate('/dashboard', { replace: true })
+      
     } catch (err: any) {
       console.error('Login error:', err)
       const errorMessage = err.response?.data?.detail || 
@@ -35,7 +45,7 @@ export default function Login() {
   return (
     <div className={styles.container}>
       <div className={styles.card}>
-        <h1>Airport Assets</h1>
+        <h1>Airport Assets Management </h1>
         <p>Sign in to your account</p>
 
         {error && <div className={styles.error}>{error}</div>}
@@ -49,6 +59,7 @@ export default function Login() {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               disabled={loading}
+              required
             />
           </div>
 
@@ -60,6 +71,7 @@ export default function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={loading}
+              required
             />
           </div>
 
@@ -68,7 +80,7 @@ export default function Login() {
           </button>
         </form>
 
-        <p className={styles.demo}>Demo credentials: admin / Aiport123</p>
+        <p className={styles.demo}>Demo credentials: admin / admin123</p>
       </div>
     </div>
   )
